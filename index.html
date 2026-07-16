@@ -1,195 +1,455 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Links</title>
-    <!-- アイコンフォント Font Awesome の読み込み -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* 全体設定 */
-        :root {
-            --bg-color: #f3f4f6; /* 背景色 */
-            --card-bg: #ffffff;  /* カードの背景色 */
-            --text-main: #1f2937; /* メイン文字色 */
-            --text-sub: #4b5563;  /* サブ文字色 */
-            --accent-color: #6366f1; /* ボタンホバー時のアクセントカラー */
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#253A52" />
+<title>Profile</title>
+<meta name="description" content="自己紹介ページ" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%23BC3A2B'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700;800&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
+<style>
+  :root {
+    --ai: #253A52;        /* 藍 - 背景の藍色 */
+    --ai-deep: #16232F;   /* 藍(深) - 背景グラデーションの深部 */
+    --washi: #F8F4EA;     /* 和紙 - カードの紙面色 */
+    --sumi: #2B2620;      /* 墨 - 本文の文字色 */
+    --sumi-light: #5C5346;/* 墨(淡) - 補足文字の色 */
+    --shu: #BC3A2B;       /* 朱 - 印(はんこ)のアクセントカラー */
+    --hairline: rgba(43,38,32,0.14);
+    --radius: 8px;
+  }
 
-        /* モバイルサイズのメインコンテナ */
-        .container {
-            width: 100%;
-            max-width: 480px; /* スマートフォンサイズに制限 */
-            text-align: center;
-        }
+  * { box-sizing: border-box; }
 
-        /* プロフィール部分 */
-        .profile-img {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+  html, body { margin: 0; padding: 0; }
 
-        .name {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin: 15px 0 5px 0;
-        }
+  body {
+    min-height: 100vh;
+    font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+    color: var(--sumi);
+    background-color: var(--ai);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 4px),
+      repeating-linear-gradient(-45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 4px),
+      linear-gradient(160deg, var(--ai) 0%, var(--ai-deep) 100%);
+    display: flex;
+    justify-content: center;
+    padding: 64px 20px 48px;
+  }
 
-        .bio {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
+  .stage {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-        /* SNSショートカットアイコン */
-        .sns-icons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+  /* ---------- カード本体（名刺） ---------- */
+  .card {
+    position: relative;
+    width: 100%;
+    background: var(--washi);
+    border-radius: var(--radius);
+    padding: 52px 40px 44px;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.10),
+      0 10px 24px -8px rgba(0,0,0,0.35),
+      0 24px 48px -16px rgba(0,0,0,0.45);
+    animation: card-settle 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 
-        .sns-icons a {
-            color: var(--text-sub);
-            font-size: 1.6rem;
-            transition: transform 0.2s, color 0.2s;
-            text-decoration: none;
-        }
+  .card-label {
+    position: absolute;
+    top: 20px;
+    right: 26px;
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--sumi-light);
+    font-weight: 500;
+  }
 
-        .sns-icons a:hover {
-            color: var(--accent-color);
-            transform: translateY(-3px);
-        }
+  /* ---------- プロフィール ---------- */
+  .profile { text-align: center; }
 
-        /* リンクボタンのコンテナ */
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 22px;
+  }
 
-        /* リンクボタンのデザイン */
-        .link-card {
-            background-color: var(--card-bg);
-            color: var(--text-main);
-            padding: 16px;
-            border-radius: 16px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(145deg, var(--ai), var(--ai-deep));
+    color: var(--washi);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 38px;
+    font-weight: 700;
+    overflow: hidden;
+    border: 3px solid var(--washi);
+    box-shadow: 0 0 0 1px var(--hairline);
+  }
 
-        .link-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-        }
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-        /* 左側のアイコンとテキストを並べるためのラッパー */
-        .link-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+  .hanko {
+    position: absolute;
+    bottom: -4px;
+    right: -8px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--shu);
+    color: var(--washi);
+    border: 2.5px solid var(--washi);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 15px;
+    transform: rotate(-8deg);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    animation: hanko-stamp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+  }
 
-        .link-icon {
-            font-size: 1.2rem;
-            color: var(--accent-color);
-            width: 24px;
-            text-align: center;
-        }
+  .name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+  }
 
-        .arrow-icon {
-            font-size: 0.8rem;
-            color: #9ca3af;
-        }
+  .tagline {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--shu);
+    letter-spacing: 0.02em;
+    margin: 0 0 18px;
+  }
 
-        /* フッター */
-        footer {
-            margin-top: 40px;
-            font-size: 0.75rem;
-            color: #9ca3af;
-        }
-    </style>
+  .bio {
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--sumi-light);
+    max-width: 40ch;
+    margin: 0 auto;
+  }
+
+  /* ---------- 区切り線（チケットの半券風） ---------- */
+  .divider {
+    border: none;
+    border-top: 1.5px dashed var(--hairline);
+    margin: 36px 0 28px;
+  }
+
+  /* ---------- リンク一覧 ---------- */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--sumi-light);
+    font-weight: 700;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+  }
+
+  .links { display: flex; flex-direction: column; }
+
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 8px;
+    text-decoration: none;
+    color: inherit;
+    border-top: 1px solid var(--hairline);
+    border-radius: 4px;
+    transition: background-color 0.2s ease, padding-left 0.2s ease;
+  }
+
+  .links .link-row:last-child { border-bottom: 1px solid var(--hairline); }
+
+  .link-row:hover,
+  .link-row:focus-visible {
+    background: rgba(188, 58, 43, 0.06);
+    padding-left: 14px;
+  }
+
+  .link-row:focus-visible {
+    outline: 2px solid var(--shu);
+    outline-offset: -2px;
+  }
+
+  .link-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--ai);
+    color: var(--washi);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .link-text { flex: 1; min-width: 0; }
+
+  .link-title {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .link-desc {
+    display: block;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--sumi-light);
+    margin-top: 2px;
+  }
+
+  .link-row:hover .link-title,
+  .link-row:focus-visible .link-title { color: var(--shu); }
+
+  .link-arrow {
+    color: var(--sumi-light);
+    font-size: 15px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .link-row:hover .link-arrow,
+  .link-row:focus-visible .link-arrow {
+    transform: translateX(3px);
+    color: var(--shu);
+  }
+
+  /* ---------- フッター ---------- */
+  .footnote {
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    margin: 28px 0 0;
+  }
+
+  /* ---------- アニメーション ---------- */
+  @keyframes card-settle {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes hanko-stamp {
+    from { opacity: 0; transform: rotate(-8deg) scale(1.9); }
+    to   { opacity: 1; transform: rotate(-8deg) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .hanko, .link-row { animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- レスポンシブ ---------- */
+  @media (max-width: 480px) {
+    body { padding: 40px 14px 32px; }
+    .card { padding: 44px 22px 32px; }
+    .name { font-size: 26px; }
+    .avatar-wrap { width: 92px; height: 92px; }
+    .avatar { font-size: 34px; }
+    .card-label { right: 18px; top: 16px; }
+  }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- プロフィールヘッダー -->
-        <!-- ※丸いプロフィール画像（なければ placeholder.com などで仮表示） -->
-        <img class="profile-img" src="https://via.placeholder.com/150" alt="プロフィール画像">
-        
-        <div class="name">あなたの名前 / 活動名</div>
-        <div class="bio">
-            ここに簡単な自己紹介や肩書きを記載します。<br>
-            HTML / CSSを勉強しながら、自分だけのリンク集を作成中！
-        </div>
+<!--
+  ================================================================
+  自己紹介ホームページ
+  ----------------------------------------------------------------
+  編集していただくのは、ページ下部の script タグの中にある
+  「profile」と「links」の2つだけで大丈夫です。
+  それより上のHTML/CSSは基本的に触らなくてもそのまま使えます。
+  ================================================================
+-->
 
-        <!-- SNSショートカットリンク -->
-        <div class="sns-icons">
-            <a href="https://twitter.com" target="_blank" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://github.com" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-            <a href="mailto:your-email@example.com" aria-label="Email"><i class="fa-regular fa-envelope"></i></a>
-        </div>
+<div class="stage">
+  <main class="card" id="card">
+    <p class="card-label" id="card-label"></p>
 
-        <!-- メインリンク一覧 -->
-        <div class="links-container">
-            <!-- リンクカード1 -->
-            <a href="https://your-blog-url.com" target="_blank" class="link-card">
-                <div class="link-content">
-                    <i class="fa-solid fa-blog link-icon"></i>
-                    <span>オフィシャルブログ</span>
-                </div>
-                <i class="fa-solid fa-chevron-right arrow-icon"></i>
-            </a>
-
-            <!-- リンクカード2 -->
-            <a href="https://your-shop-url.com" target="_blank" class="link-card">
-                <div class="link-content">
-                    <i class="fa-solid fa-cart-shopping link-icon"></i>
-                    <span>オンラインショップ</span>
-                </div>
-                <i class="fa-solid fa-chevron-right arrow-icon"></i>
-            </a>
-
-            <!-- リンクカード3 -->
-            <a href="https://your-portfolio.com" target="_blank" class="link-card">
-                <div class="link-content">
-                    <i class="fa-solid fa-palette link-icon"></i>
-                    <span>ポートフォリオ / 制作実績</span>
-                </div>
-                <i class="fa-solid fa-chevron-right arrow-icon"></i>
-            </a>
-        </div>
-
-        <!-- フッター表記 -->
-        <footer>
-            &copy; 2026 Your Name. All rights reserved.
-        </footer>
+    <div class="profile">
+      <div class="avatar-wrap">
+        <div class="avatar" id="avatar"></div>
+        <div class="hanko" id="hanko" aria-hidden="true"></div>
+      </div>
+      <h1 class="name" id="profile-name"></h1>
+      <p class="tagline" id="profile-tagline"></p>
+      <p class="bio" id="profile-bio"></p>
     </div>
 
+    <hr class="divider" />
+
+    <section>
+      <h2 class="section-label">Links</h2>
+      <div class="links" id="links-container"></div>
+    </section>
+  </main>
+
+  <p class="footnote" id="footnote"></p>
+</div>
+
+<script>
+  /* ================================================================
+     ▼▼▼ ここから編集：プロフィール情報 ▼▼▼
+     ================================================================ */
+  const profile = {
+    name: "山田 太郎",
+    tagline: "Webエンジニア / ものづくりが好きです",
+    bio: "普段はフロントエンドを中心に開発をしています。休日はカメラを持って街を歩いたり、コーヒーを淹れたりするのが好きです。",
+
+    // 写真を使いたい場合はここにファイル名やURLを入れてください
+    // 例: "avatar.jpg"（このHTMLと同じ場所に画像を置いてください）
+    // 空欄のままなら、名前の頭文字が自動でアイコンとして表示されます。
+    avatarImage: "",
+
+    // 右上の小さなラベル文字
+    label: "SELF INTRODUCTION",
+
+    // ページ下部の小さな文字（空欄なら「© 年 名前」が自動で入ります）
+    footnote: ""
+  };
+
+  /* ================================================================
+     ▼▼▼ ここから編集：リンク一覧 ▼▼▼
+     増やしたいときは、{ } のかたまりを1つコピーして下に貼り付け、
+     中身を書き換えるだけでOKです。
+     ・最後の項目以外は、かたまりの後ろに必ずカンマ「,」をつけてください
+     ・icon は絵文字を1つ入れるだけでOKです
+     ================================================================ */
+  const links = [
+    {
+      icon: "🐙",
+      title: "GitHub",
+      url: "https://github.com/your-username",
+      description: "コードやOSS活動はこちら"
+    },
+    {
+      icon: "🐦",
+      title: "X (Twitter)",
+      url: "https://x.com/your-username",
+      description: "日々の呟きや技術メモを発信しています"
+    },
+    {
+      icon: "📝",
+      title: "Blog",
+      url: "https://your-blog.example.com",
+      description: "考えたことや技術記事をまとめています"
+    },
+    {
+      icon: "💼",
+      title: "Portfolio",
+      url: "https://your-portfolio.example.com",
+      description: "制作物や実績をまとめています"
+    }
+
+    // ↓↓↓ 新しいリンクを追加するときはこの下に書いてください ↓↓↓
+    // 例:
+    // ,{
+    //   icon: "🔗",
+    //   title: "タイトル",
+    //   url: "https://example.com",
+    //   description: "補足説明をここに書きます"
+    // }
+
+  ];
+  /* ================================================================
+     ▲▲▲ 編集はここまでです。この下は表示用のコードなので
+     通常は触らなくて大丈夫です ▲▲▲
+     ================================================================ */
+
+  function renderProfile() {
+    const initial = (profile.name || "?").trim().charAt(0);
+
+    document.title = profile.name ? `${profile.name} | Profile` : "Profile";
+    document.getElementById('card-label').textContent = profile.label || "";
+    document.getElementById('profile-name').textContent = profile.name;
+    document.getElementById('profile-tagline').textContent = profile.tagline;
+    document.getElementById('profile-bio').textContent = profile.bio;
+    document.getElementById('hanko').textContent = initial;
+
+    const avatarEl = document.getElementById('avatar');
+    if (profile.avatarImage) {
+      const img = document.createElement('img');
+      img.src = profile.avatarImage;
+      img.alt = profile.name;
+      avatarEl.appendChild(img);
+    } else {
+      avatarEl.textContent = initial;
+    }
+
+    const year = new Date().getFullYear();
+    document.getElementById('footnote').textContent =
+      profile.footnote || `© ${year} ${profile.name}`;
+  }
+
+  function renderLinks() {
+    const container = document.getElementById('links-container');
+
+    links.forEach(function (link) {
+      const a = document.createElement('a');
+      a.className = 'link-row';
+      a.href = link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'link-icon';
+      iconSpan.textContent = link.icon || '🔗';
+      iconSpan.setAttribute('aria-hidden', 'true');
+
+      const textWrap = document.createElement('span');
+      textWrap.className = 'link-text';
+
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'link-title';
+      titleSpan.textContent = link.title || '';
+
+      const descSpan = document.createElement('span');
+      descSpan.className = 'link-desc';
+      descSpan.textContent = link.description || '';
+
+      textWrap.appendChild(titleSpan);
+      textWrap.appendChild(descSpan);
+
+      const arrowSpan = document.createElement('span');
+      arrowSpan.className = 'link-arrow';
+      arrowSpan.textContent = '→';
+      arrowSpan.setAttribute('aria-hidden', 'true');
+
+      a.appendChild(iconSpan);
+      a.appendChild(textWrap);
+      a.appendChild(arrowSpan);
+      container.appendChild(a);
+    });
+  }
+
+  renderProfile();
+  renderLinks();
+</script>
 </body>
 </html>
