@@ -229,7 +229,15 @@
     opacity: 0.7;
   }
 
-  .mbti-badge {
+  .badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 18px;
+  }
+
+  .info-badge {
     display: inline-flex;
     align-items: stretch;
     font-size: 12px;
@@ -238,16 +246,15 @@
     border: 1px solid var(--border-strong);
     border-radius: 4px;
     overflow: hidden;
-    margin: 0 0 18px;
   }
 
-  .mbti-badge-label {
+  .info-badge-label {
     background: var(--panel-alt);
     color: var(--text-muted);
     padding: 5px 11px;
   }
 
-  .mbti-badge-value {
+  .info-badge-value {
     background: var(--sky-deep);
     color: #04202E;
     padding: 5px 11px;
@@ -436,9 +443,19 @@
       </div>
       <h1 class="name" id="profile-name"></h1>
       <p class="tagline" id="profile-tagline"></p>
-      <div class="mbti-badge" id="mbti-badge">
-        <span class="mbti-badge-label">MBTI</span>
-        <span class="mbti-badge-value" id="mbti-value"></span>
+      <div class="badges-row">
+        <div class="info-badge" id="mbti-badge">
+          <span class="info-badge-label">MBTI</span>
+          <span class="info-badge-value" id="mbti-value"></span>
+        </div>
+        <div class="info-badge" id="age-badge">
+          <span class="info-badge-label">AGE</span>
+          <span class="info-badge-value" id="age-value"></span>
+        </div>
+        <div class="info-badge" id="game-name-badge">
+          <span class="info-badge-label">GAME</span>
+          <span class="info-badge-value" id="game-name-value"></span>
+        </div>
       </div>
       <p class="bio" id="profile-bio"></p>
     </div>
@@ -464,6 +481,12 @@
 
     // MBTIタイプ（空欄なら非表示になります）
     mbti: "ISTJ",
+
+    // 年齢ステータス（空欄なら非表示になります）
+    ageStatus: "成人済み",
+
+    // ゲーム内の名前（空欄なら非表示になります）
+    gameName: "Paㅋ",
 
     bio: "普段は自分の欲しいサイトを作って公開しています。\n効率化やちょっとしたグリッチ技を扱うのが好きです。",
 
@@ -493,7 +516,7 @@
       icon: "🐦",
       title: "X (Twitter)",
       url: "https://x.com/skyzztai",
-      description: "日々のぼやきやスクショ、メモなど\nゆるい呟きを投稿しています！"
+      description: "日々のぼやきやスクショ、メモなど\nゆるい呟きを投稿しています！\n早く返信してほしい・確実に読んでほしい内容は、リプライ・引用・DMでお送りください！"
     },
     {
       icon: "📦",
@@ -502,16 +525,22 @@
       description: "感想やご意見はこちらへどうぞ。\nDMやリプで送りにくい内容も気軽にお送りください！"
     },
     {
-       icon: "✨",
-       title: "精霊同行ツール",
-       url: "https://taipak5000.github.io/companion/",
-       description: "精霊の連れ歩き状況を管理できるサイトです。\nアイテム交換やツリーの進行度がひと目で分かります。\n欲しいアイテムを効率よく集めたい方におすすめ！"
-     },
+      icon: "📌",
+      title: "創作物管理ツール",
+      url: "https://taipak5000.github.io/share/",
+      description: "シェアメモやスペース、メセボなどの\n期限を管理できるツールです。\n投稿の期限切れを見逃したくない方におすすめ！"
+    },
     {
        icon: "🕯️",
        title: "星のキャンドル計算機",
        url: "https://taipak5000.github.io/star-candle/",
        description: "目標本数と所持本数を入力するだけで、\n達成時期の目安と赤闇の自動予測がわかります。\n目標達成日を知っておきたい方におすすめ！"
+     },
+    {
+       icon: "✨",
+       title: "精霊同行ツール",
+       url: "https://taipak5000.github.io/companion/",
+       description: "精霊の連れ歩き状況を管理できるサイトです。\nアイテム交換やツリーの進行度がひと目で分かります。\n欲しいアイテムを効率よく集めたい方におすすめ！"
      },
 
 
@@ -546,6 +575,22 @@
       mbtiEl.style.display = '';
     } else {
       mbtiEl.style.display = 'none';
+    }
+
+    const ageEl = document.getElementById('age-badge');
+    if (profile.ageStatus) {
+      document.getElementById('age-value').textContent = profile.ageStatus;
+      ageEl.style.display = '';
+    } else {
+      ageEl.style.display = 'none';
+    }
+
+    const gameNameEl = document.getElementById('game-name-badge');
+    if (profile.gameName) {
+      document.getElementById('game-name-value').textContent = profile.gameName;
+      gameNameEl.style.display = '';
+    } else {
+      gameNameEl.style.display = 'none';
     }
 
     const avatarEl = document.getElementById('avatar');
