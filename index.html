@@ -3,24 +3,40 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#253A52" />
+<meta name="theme-color" content="#0B1220" />
 <title>Profile</title>
 <meta name="description" content="自己紹介ページ" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%23BC3A2B'/%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%2338BDF8'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --ai: #253A52;        /* 藍 - 背景の藍色 */
-    --ai-deep: #16232F;   /* 藍(深) - 背景グラデーションの深部 */
-    --washi: #F8F4EA;     /* 和紙 - カードの紙面色 */
-    --sumi: #2B2620;      /* 墨 - 本文の文字色 */
-    --sumi-light: #5C5346;/* 墨(淡) - 補足文字の色 */
-    --shu: #BC3A2B;       /* 朱 - 印(はんこ)のアクセントカラー */
-    --hairline: rgba(43,38,32,0.14);
-    --radius: 8px;
+    --bg: #0B1220;          /* 背景の紺 */
+    --bg-glow: rgba(56, 189, 248, 0.16);
+    --grid-line: rgba(56, 189, 248, 0.07);
+    --panel: #131E30;       /* カード本体 */
+    --panel-alt: #0C1729;   /* タブバー・ホバー面 */
+    --row: #101D32;         /* リンク行の面 */
+    --border: rgba(148, 163, 184, 0.22);
+    --border-strong: rgba(56, 189, 248, 0.5);
+    --text: #EDF2F9;        /* 本文の文字色 */
+    --text-muted: #A9B8CC;  /* 補足・コメント色 */
+    --sky: #38BDF8;         /* メインの水色 */
+    --sky-bright: #7DD3FC;  /* 明るい水色（ホバー用） */
+    --sky-deep: #0EA5E9;    /* 濃い水色 */
+    --teal: #2DD4BF;        /* 差し色（青緑） */
+    --indigo: #818CF8;      /* 差し色（青紫） */
+    --radius: 16px;
+
+    /* 画面サイズに応じて広がる余白 */
+    --page-pad-y: clamp(40px, 8vw, 96px);
+    --page-pad-x: clamp(12px, 3vw, 56px);
+    --page-pad-b: clamp(32px, 6vw, 72px);
+    --card-pad-y: clamp(30px, 5vw, 56px);
+    --card-pad-x: clamp(20px, 5vw, 48px);
+    --card-pad-b: clamp(26px, 4.5vw, 48px);
   }
 
   * { box-sizing: border-box; }
@@ -29,49 +45,105 @@
 
   body {
     min-height: 100vh;
-    font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
-    color: var(--sumi);
-    background-color: var(--ai);
+    font-family: 'M PLUS 1 Code', 'Consolas', 'Hiragino Sans', monospace;
+    color: var(--text);
+    background-color: var(--bg);
     background-image:
-      repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 4px),
-      repeating-linear-gradient(-45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 4px),
-      linear-gradient(160deg, var(--ai) 0%, var(--ai-deep) 100%);
+      radial-gradient(ellipse 60% 40% at 18% 10%, rgba(56,189,248,0.16), transparent 60%),
+      radial-gradient(ellipse 55% 35% at 85% 8%, rgba(125,211,252,0.13), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 78% 92%, rgba(45,212,191,0.12), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 12% 88%, rgba(56,189,248,0.1), transparent 60%),
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(180deg, #0B1220 0%, #0E1B30 50%, #0B1220 100%);
+    background-size: auto, auto, auto, auto, 34px 34px, 34px 34px, 100% 100%;
+    background-attachment: fixed;
     display: flex;
     justify-content: center;
-    padding: 64px 20px 48px;
+    padding: var(--page-pad-y) var(--page-pad-x) var(--page-pad-b);
   }
 
   .stage {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 600px;
+    max-width: 680px;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  /* ---------- カード本体（名刺） ---------- */
+  /* ---------- 飛び散るシャボン玉パーティクル ---------- */
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 5;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95), rgba(125,211,252,0.4) 45%, rgba(56,189,248,0.15) 75%, transparent 100%);
+    border: 1px solid rgba(186,230,253,0.45);
+    box-shadow: inset 0 0 5px rgba(255,255,255,0.4);
+    animation: particle-float 0.9s ease-out forwards;
+    will-change: transform, opacity;
+  }
+
+  @keyframes particle-float {
+    0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% - 70px)) scale(1.2); opacity: 0; }
+  }
+
+  /* ---------- カード本体 ---------- */
   .card {
     position: relative;
     width: 100%;
-    background: var(--washi);
+    background: var(--panel);
     border-radius: var(--radius);
-    padding: 52px 40px 44px;
+    border: 1px solid var(--border);
+    padding: var(--card-pad-y) var(--card-pad-x) var(--card-pad-b);
     box-shadow:
-      0 1px 2px rgba(0,0,0,0.10),
-      0 10px 24px -8px rgba(0,0,0,0.35),
-      0 24px 48px -16px rgba(0,0,0,0.45);
+      0 1px 2px rgba(0,0,0,0.4),
+      0 20px 40px -18px rgba(56,189,248,0.28),
+      0 40px 80px -32px rgba(0,0,0,0.6);
     animation: card-settle 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
+  /* ---------- ターミナル風タブバー ---------- */
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: calc(var(--card-pad-y) * -1) calc(var(--card-pad-x) * -1) 24px;
+    padding: clamp(11px, 2.2vw, 16px) clamp(14px, 3vw, 20px);
+    background: var(--panel-alt);
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .term-dots {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .term-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .term-dot:nth-child(1) { background: #FF5F56; }
+  .term-dot:nth-child(2) { background: #FFBD2E; }
+  .term-dot:nth-child(3) { background: #27C93F; }
+
   .card-label {
-    position: absolute;
-    top: 20px;
-    right: 26px;
     margin: 0;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--sumi-light);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* ---------- プロフィール ---------- */
@@ -79,26 +151,36 @@
 
   .avatar-wrap {
     position: relative;
-    width: 104px;
-    height: 104px;
-    margin: 0 auto 22px;
+    width: 112px;
+    height: 112px;
+    margin: 0 auto 18px;
+    cursor: pointer;
+  }
+
+  .avatar.boing { animation: avatar-boing 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+  @keyframes avatar-boing {
+    0%   { transform: scale(1, 1); }
+    30%  { transform: scale(0.88, 1.12); }
+    55%  { transform: scale(1.12, 0.9); }
+    75%  { transform: scale(0.96, 1.04); }
+    100% { transform: scale(1, 1); }
   }
 
   .avatar {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: linear-gradient(145deg, var(--ai), var(--ai-deep));
-    color: var(--washi);
+    background: linear-gradient(145deg, var(--sky-deep), var(--indigo));
+    color: #F8FAFC;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Shippori Mincho', serif;
-    font-size: 38px;
+    font-size: 42px;
     font-weight: 700;
     overflow: hidden;
-    border: 3px solid var(--washi);
-    box-shadow: 0 0 0 1px var(--hairline);
+    border: 4px solid var(--panel);
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.4), 0 10px 24px -8px rgba(56,189,248,0.4);
   }
 
   .avatar img {
@@ -107,106 +189,156 @@
     object-fit: cover;
   }
 
-  .hanko {
-    position: absolute;
-    bottom: -4px;
-    right: -8px;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--shu);
-    color: var(--washi);
-    border: 2.5px solid var(--washi);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Shippori Mincho', serif;
-    font-weight: 700;
-    font-size: 15px;
-    transform: rotate(-8deg);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    animation: hanko-stamp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
-  }
-
   .name {
-    font-family: 'Shippori Mincho', serif;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    color: var(--text);
     margin: 0 0 8px;
   }
 
+  .name::before {
+    content: "> ";
+    color: var(--sky);
+    font-weight: 700;
+  }
+
+  .name::after {
+    content: "_";
+    color: var(--sky);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
   .tagline {
-    font-size: 14.5px;
+    display: block;
+    font-size: 15px;
     font-weight: 500;
-    color: var(--shu);
-    letter-spacing: 0.02em;
+    font-style: italic;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+    margin: 0 0 14px;
+  }
+
+  .tagline::before {
+    content: "// ";
+    opacity: 0.7;
+  }
+
+  .mbti-badge {
+    display: inline-flex;
+    align-items: stretch;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    overflow: hidden;
     margin: 0 0 18px;
   }
 
-  .bio {
-    font-size: 14.5px;
-    line-height: 1.9;
-    color: var(--sumi-light);
-    max-width: 40ch;
-    margin: 0 auto;
+  .mbti-badge-label {
+    background: var(--panel-alt);
+    color: var(--text-muted);
+    padding: 5px 11px;
   }
 
-  /* ---------- 区切り線（チケットの半券風） ---------- */
+  .mbti-badge-value {
+    background: var(--sky-deep);
+    color: #04202E;
+    padding: 5px 11px;
+  }
+
+  .bio {
+    font-size: 15.5px;
+    font-weight: 500;
+    line-height: 1.75;
+    color: var(--text-muted);
+    max-width: 42ch;
+    margin: 0 auto;
+    white-space: pre-line;
+  }
+
+  /* ---------- 区切り線 ---------- */
   .divider {
     border: none;
-    border-top: 1.5px dashed var(--hairline);
-    margin: 36px 0 28px;
+    border-top: 1px dashed var(--border);
+    margin: 26px 0 22px;
   }
 
   /* ---------- リンク一覧 ---------- */
   .section-label {
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    color: var(--sumi-light);
-    font-weight: 700;
-    margin: 0 0 14px;
-    text-transform: uppercase;
+    display: block;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+    letter-spacing: 0.02em;
   }
 
-  .links { display: flex; flex-direction: column; }
+  .section-label::before {
+    content: "// ";
+    opacity: 0.7;
+  }
+
+  .links { display: flex; flex-direction: column; gap: 10px; }
 
   .link-row {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 14px 8px;
+    gap: 14px;
+    padding: 13px 16px;
     text-decoration: none;
     color: inherit;
-    border-top: 1px solid var(--hairline);
-    border-radius: 4px;
-    transition: background-color 0.2s ease, padding-left 0.2s ease;
+    background: var(--row);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
-
-  .links .link-row:last-child { border-bottom: 1px solid var(--hairline); }
 
   .link-row:hover,
   .link-row:focus-visible {
-    background: rgba(188, 58, 43, 0.06);
-    padding-left: 14px;
+    background: var(--panel-alt);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -14px rgba(56,189,248,0.55);
   }
 
   .link-row:focus-visible {
-    outline: 2px solid var(--shu);
-    outline-offset: -2px;
+    outline: 2px solid var(--sky);
+    outline-offset: 1px;
   }
 
   .link-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--ai);
-    color: var(--washi);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, var(--sky), var(--sky-deep));
+    color: #04202E;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 19px;
     flex-shrink: 0;
+    box-shadow: 0 4px 10px -3px rgba(56,189,248,0.45);
+  }
+
+  .link-row:nth-of-type(4n+2) .link-icon { background: linear-gradient(145deg, var(--teal), #0D9488); }
+  .link-row:nth-of-type(4n+3) .link-icon { background: linear-gradient(145deg, var(--indigo), #4F46E5); }
+  .link-row:nth-of-type(4n+4) .link-icon { background: linear-gradient(145deg, var(--sky-bright), #0369A1); }
+
+  .link-row:hover .link-icon,
+  .link-row:focus-visible .link-icon { animation: icon-wiggle 0.5s ease; }
+
+  @keyframes icon-wiggle {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-12deg) scale(1.1); }
+    75% { transform: rotate(12deg) scale(1.1); }
   }
 
   .link-text { flex: 1; min-width: 0; }
@@ -214,23 +346,27 @@
   .link-title {
     display: block;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
+    color: var(--text);
   }
 
   .link-desc {
     display: block;
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--sumi-light);
-    margin-top: 2px;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin-top: 3px;
+    white-space: pre-line;
   }
 
   .link-row:hover .link-title,
-  .link-row:focus-visible .link-title { color: var(--shu); }
+  .link-row:focus-visible .link-title { color: var(--sky-bright); }
 
   .link-arrow {
-    color: var(--sumi-light);
-    font-size: 15px;
+    color: var(--sky);
+    font-weight: 700;
+    font-size: 14px;
     flex-shrink: 0;
     transition: transform 0.2s ease, color 0.2s ease;
   }
@@ -238,15 +374,15 @@
   .link-row:hover .link-arrow,
   .link-row:focus-visible .link-arrow {
     transform: translateX(3px);
-    color: var(--shu);
+    color: var(--sky-bright);
   }
 
   /* ---------- フッター ---------- */
   .footnote {
     text-align: center;
-    color: rgba(255,255,255,0.6);
+    color: rgba(148, 163, 184, 0.55);
     font-size: 12px;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
     margin: 28px 0 0;
   }
 
@@ -256,23 +392,18 @@
     to   { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  @keyframes hanko-stamp {
-    from { opacity: 0; transform: rotate(-8deg) scale(1.9); }
-    to   { opacity: 1; transform: rotate(-8deg) scale(1); }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .card, .hanko, .link-row { animation: none !important; transition: none !important; }
+    .card, .link-row, .link-icon, .avatar, .particle, .name::after {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 
   /* ---------- レスポンシブ ---------- */
   @media (max-width: 480px) {
-    body { padding: 40px 14px 32px; }
-    .card { padding: 44px 22px 32px; }
     .name { font-size: 26px; }
-    .avatar-wrap { width: 92px; height: 92px; }
+    .avatar-wrap { width: 96px; height: 96px; }
     .avatar { font-size: 34px; }
-    .card-label { right: 18px; top: 16px; }
   }
 </style>
 </head>
@@ -290,15 +421,25 @@
 
 <div class="stage">
   <main class="card" id="card">
-    <p class="card-label" id="card-label"></p>
+    <div class="term-bar">
+      <span class="term-dots" aria-hidden="true">
+        <span class="term-dot"></span>
+        <span class="term-dot"></span>
+        <span class="term-dot"></span>
+      </span>
+      <p class="card-label" id="card-label"></p>
+    </div>
 
     <div class="profile">
-      <div class="avatar-wrap">
+      <div class="avatar-wrap" id="avatar-wrap" title="タップしてみてね">
         <div class="avatar" id="avatar"></div>
-        <div class="hanko" id="hanko" aria-hidden="true"></div>
       </div>
       <h1 class="name" id="profile-name"></h1>
       <p class="tagline" id="profile-tagline"></p>
+      <div class="mbti-badge" id="mbti-badge">
+        <span class="mbti-badge-label">MBTI</span>
+        <span class="mbti-badge-value" id="mbti-value"></span>
+      </div>
       <p class="bio" id="profile-bio"></p>
     </div>
 
@@ -320,7 +461,11 @@
   const profile = {
     name: "たい",
     tagline: "ものづくりが好きです",
-    bio: "普段は自分が欲しいと思ったサイトを開発をしています。グリッチや効率よくするための方法を扱うのが好きです。",
+
+    // MBTIタイプ（空欄なら非表示になります）
+    mbti: "ISTJ",
+
+    bio: "普段は自分の欲しいサイトを作って公開しています。\n効率化やちょっとしたグリッチ技を扱うのが好きです。",
 
     // 写真を使いたい場合はここにファイル名やURLを入れてください
     // 例: "avatar.jpg"（このHTMLと同じ場所に画像を置いてください）
@@ -348,25 +493,25 @@
       icon: "🐦",
       title: "X (Twitter)",
       url: "https://x.com/skyzztai",
-      description: "ぼやき、スクショ、メモなどどうでもいいことをいっぱい呟いてます！！"
+      description: "日々のぼやきやスクショ、メモなど\nゆるい呟きを投稿しています！"
     },
     {
       icon: "📦",
       title: "お題箱",
       url: "https://odaibako.net/u/Skyzztai",
-      description: "ご意見、感想などDMやリプで送りにくい場合はこちらにどうぞ！なんでも受け付けてます！"
+      description: "感想やご意見はこちらへどうぞ。\nDMやリプで送りにくい内容も気軽にお送りください！"
     },
     {
        icon: "✨",
        title: "精霊同行ツール",
        url: "https://taipak5000.github.io/companion/",
-       description: "精霊連れ歩きシステムを管理するサイト。連れ歩きやアイテム交換に応じたツリーの進行度が分かります！！ほしいアイテムを効率よくとるためや、バランスよく進めたい方にオススメ！！"
+       description: "精霊の連れ歩き状況を管理できるサイトです。\nアイテム交換やツリーの進行度がひと目で分かります。\n欲しいアイテムを効率よく集めたい方におすすめ！"
      },
     {
        icon: "🕯️",
        title: "星のキャンドル計算機",
        url: "https://taipak5000.github.io/star-candle/",
-       description: "目標本数と現在の所持本数を入力すると、だいたいいつくらいに星キャンが集まるかわかります！赤闇の自動予測も表示し、反映できます！！いつ目標本数に到達するのか知っておきたい人にオススメ！！"
+       description: "目標本数と所持本数を入力するだけで、\n達成時期の目安と赤闇の自動予測がわかります。\n目標達成日を知っておきたい方におすすめ！"
      },
 
 
@@ -394,7 +539,14 @@
     document.getElementById('profile-name').textContent = profile.name;
     document.getElementById('profile-tagline').textContent = profile.tagline;
     document.getElementById('profile-bio').textContent = profile.bio;
-    document.getElementById('hanko').textContent = initial;
+
+    const mbtiEl = document.getElementById('mbti-badge');
+    if (profile.mbti) {
+      document.getElementById('mbti-value').textContent = profile.mbti;
+      mbtiEl.style.display = '';
+    } else {
+      mbtiEl.style.display = 'none';
+    }
 
     const avatarEl = document.getElementById('avatar');
     if (profile.avatarImage) {
@@ -408,7 +560,7 @@
 
     const year = new Date().getFullYear();
     document.getElementById('footnote').textContent =
-      profile.footnote || `© ${year} ${profile.name}`;
+      '// ' + (profile.footnote || `© ${year} ${profile.name}`);
   }
 
   function renderLinks() {
@@ -442,7 +594,7 @@
 
       const arrowSpan = document.createElement('span');
       arrowSpan.className = 'link-arrow';
-      arrowSpan.textContent = '→';
+      arrowSpan.textContent = '->';
       arrowSpan.setAttribute('aria-hidden', 'true');
 
       a.appendChild(iconSpan);
@@ -452,8 +604,54 @@
     });
   }
 
+  /* ================================================================
+     ▼▼▼ ここから：アニメーション・楽しい仕組み ▼▼▼
+     ================================================================ */
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 指定した座標にシャボン玉を弾けさせる
+  function burstParticles(x, y, count) {
+    if (prefersReducedMotion) return;
+
+    for (let i = 0; i < (count || 6); i++) {
+      const p = document.createElement('span');
+      p.className = 'particle';
+      const size = 8 + Math.random() * 10;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      p.style.setProperty('--dx', ((Math.random() - 0.5) * 90) + 'px');
+      document.body.appendChild(p);
+      p.addEventListener('animationend', function () { p.remove(); });
+    }
+  }
+
+  // アバターをタップするとシャボン玉が弾ける
+  function setupAvatarEasterEgg() {
+    const avatarWrap = document.getElementById('avatar-wrap');
+    const avatarEl = document.getElementById('avatar');
+
+    avatarWrap.addEventListener('click', function () {
+      const rect = avatarWrap.getBoundingClientRect();
+      burstParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
+      avatarEl.classList.remove('boing');
+      void avatarEl.offsetWidth; // アニメーションを再生し直すためのリフロー
+      avatarEl.classList.add('boing');
+    });
+
+    avatarEl.addEventListener('animationend', function () {
+      avatarEl.classList.remove('boing');
+    });
+  }
+
+  /* ================================================================
+     ▲▲▲ アニメーション・楽しい仕組みはここまで ▲▲▲
+     ================================================================ */
+
   renderProfile();
   renderLinks();
+  setupAvatarEasterEgg();
 </script>
 </body>
 </html>
