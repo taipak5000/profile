@@ -270,6 +270,66 @@
     white-space: pre-line;
   }
 
+  /* ---------- もっと知りたい人向け ---------- */
+  .more-info {
+    max-width: 42ch;
+    margin: 18px auto 0;
+    text-align: center;
+  }
+
+  .more-info-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sky-bright);
+    padding: 6px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--panel-alt);
+    user-select: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .more-info-summary::-webkit-details-marker { display: none; }
+
+  .more-info-summary::before {
+    content: "▸";
+    font-size: 10px;
+    color: var(--sky);
+    transition: transform 0.2s ease;
+  }
+
+  .more-info[open] .more-info-summary::before { transform: rotate(90deg); }
+
+  .more-info-summary:hover,
+  .more-info-summary:focus-visible {
+    border-color: var(--sky);
+    background: var(--row);
+  }
+
+  .more-info-summary:focus-visible {
+    outline: 2px solid var(--sky);
+    outline-offset: 2px;
+  }
+
+  .more-info-content {
+    margin: 12px 0 0;
+    padding: 12px 14px;
+    border-left: 2px solid var(--border-strong);
+    background: var(--panel-alt);
+    border-radius: 0 8px 8px 0;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.7;
+    color: var(--text-muted);
+    text-align: left;
+    white-space: pre-line;
+  }
+
   /* ---------- 区切り線 ---------- */
   .divider {
     border: none;
@@ -458,6 +518,11 @@
         </div>
       </div>
       <p class="bio" id="profile-bio"></p>
+
+      <details class="more-info" id="more-info">
+        <summary class="more-info-summary">もっと知りたい人向け</summary>
+        <p class="more-info-content" id="more-info-content"></p>
+      </details>
     </div>
 
     <hr class="divider" />
@@ -489,6 +554,9 @@
     gameName: "Paㅋ",
 
     bio: "普段は自分の欲しいサイトを作って公開しています。\n効率化やちょっとしたグリッチ技を扱うのが好きです。",
+
+    // 「もっと知りたい人向け」を押すと表示される追加情報（空欄なら非表示になります）
+    extraInfo: "モンストやイナクロもプレイしています！",
 
     // 写真を使いたい場合はここにファイル名やURLを入れてください
     // 例: "avatar.jpg"（このHTMLと同じ場所に画像を置いてください）
@@ -597,6 +665,14 @@
       gameNameEl.style.display = '';
     } else {
       gameNameEl.style.display = 'none';
+    }
+
+    const moreInfoEl = document.getElementById('more-info');
+    if (profile.extraInfo) {
+      document.getElementById('more-info-content').textContent = profile.extraInfo;
+      moreInfoEl.style.display = '';
+    } else {
+      moreInfoEl.style.display = 'none';
     }
 
     const avatarEl = document.getElementById('avatar');
