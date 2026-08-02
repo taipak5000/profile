@@ -458,6 +458,36 @@
   .sky-panel-left { grid-column: 1; grid-row: 2; }
   .sky-panel-right { grid-column: 2; grid-row: 2; }
 
+  /* ---------- 闇の破片バッジ（アバターの右下に付く小さなピル） ---------- */
+  .shard-badge {
+    position: absolute;
+    right: -8px;
+    bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--panel);
+    border: 1.5px solid var(--border-strong);
+    border-radius: 999px;
+    padding: 3px 9px 3px 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text);
+    box-shadow: 0 4px 10px -4px rgba(0,0,0,0.6);
+    cursor: help;
+    white-space: nowrap;
+  }
+  .shard-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    background: #3A4356;
+    box-shadow: 0 0 0 2px var(--panel);
+  }
+  .shard-dot.red { background: #F87171; }
+  .shard-dot.active { animation: sky-pulse 1.6s ease-in-out infinite; }
+  .shard-dot.red.active { box-shadow: 0 0 6px 1px rgba(248,113,113,0.85), 0 0 0 2px var(--panel); }
+  .shard-dot.black.active { box-shadow: 0 0 6px 1px rgba(148,163,184,0.6), 0 0 0 2px var(--panel); }
+  .shard-badge.upcoming { opacity: 0.6; }
+
   .sky-panel {
     width: 100%;
     box-sizing: border-box;
@@ -596,6 +626,10 @@
 
         <div class="avatar-wrap" id="avatar-wrap" title="タップしてみてね">
           <div class="avatar" id="avatar"></div>
+          <div class="shard-badge" id="shardBadge">
+            <span class="shard-dot" id="shardDot"></span>
+            <span class="shard-realm" id="shardRealmText">--</span>
+          </div>
         </div>
 
         <div class="sky-panel sky-panel-right" id="skyPanelNow">
@@ -929,13 +963,13 @@
   const PT_ZONE = 'America/Los_Angeles';
   const pad2 = n => String(n).padStart(2, '0');
 
-  function getZoneParts(zone) {
+  function getZoneParts(zone, baseDate) {
     const parts = new Intl.DateTimeFormat('en-US', {
       timeZone: zone, hour12: false,
       year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', second: '2-digit',
       weekday: 'short'
-    }).formatToParts(new Date());
+    }).formatToParts(baseDate || new Date());
     const get = t => (parts.find(p => p.type === t) || {}).value;
     return {
       y: get('year'), mo: get('month'), d: get('day'),
@@ -1113,6 +1147,92 @@
   }
   renderSkyActive();
   setInterval(renderSkyActive, 60000);
+
+  /* ================================================================
+     🔺 闇の破片（シャード）の有無・色・場所
+     コミュニティで検証された予測ルール（Sky Shards: PlutoyDev/sky-shards の
+     Shard Prediction Rule）を元に計算しています。日付はPT（アメリカ太平洋時間）基準、
+     場所は「毎月1日から 草原→雨林→峡谷→捨てられた地→書庫 の順で1日ずつ切り替わる」
+     というルールに基づく王国（大まかな場所）です。非公式の予測のため、
+     実際とズレる場合があります。
+     ================================================================ */
+  const SHARD_REALMS = ['prairie', 'forest', 'valley', 'wasteland', 'vault'];
+  const SHARD_REALM_JA = { prairie: '草原', forest: '雨林', valley: '峡谷', wasteland: '捨てられた地', vault: '書庫' };
+  const SHARD_WD_ISO = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
+  // 黒い破片2種・赤い破片3種、それぞれの初回開始時刻（PT）・間隔・発生しない曜日（ISO: 月=1〜日=7）
+  const SHARD_CONFIGS = [
+    { color: 'black', offsetSec: (1 * 3600 + 50 * 60), intervalSec: 8 * 3600, noShardWkDay: [6, 7] }, // 土・日は無し
+    { color: 'black', offsetSec: (2 * 3600 + 10 * 60), intervalSec: 8 * 3600, noShardWkDay: [7, 1] }, // 日・月は無し
+    { color: 'red',   offsetSec: (7 * 3600 + 40 * 60), intervalSec: 6 * 3600, noShardWkDay: [1, 2] }, // 月・火は無し
+    { color: 'red',   offsetSec: (2 * 3600 + 20 * 60), intervalSec: 6 * 3600, noShardWkDay: [2, 3] }, // 火・水は無し
+    { color: 'red',   offsetSec: (3 * 3600 + 30 * 60), intervalSec: 6 * 3600, noShardWkDay: [3, 4] }, // 水・木は無し
+  ];
+  const SHARD_DURATION_SEC = 4 * 3600; // 破片は出現から4時間で消える
+
+  // PTでの「その日の日付・曜日」から、その日の破片の色・場所・発生パターンを求める
+  function computeShardForDay(dayOfMonth, weekdayIso) {
+    const isRed = dayOfMonth % 2 === 1;
+    const realmIdx = (dayOfMonth - 1) % 5;
+    const infoIndex = isRed ? (Math.floor((dayOfMonth - 1) / 2) % 3) + 2 : (Math.floor(dayOfMonth / 2) % 2);
+    const cfg = SHARD_CONFIGS[infoIndex];
+    return {
+      color: cfg.color,
+      realmIdx,
+      offsetSec: cfg.offsetSec,
+      intervalSec: cfg.intervalSec,
+      hasShardToday: !cfg.noShardWkDay.includes(weekdayIso)
+    };
+  }
+
+  // 現在の状況（今まさに出現中 or 次はいつ・何色・どこか）を求める
+  function findShardStatus() {
+    const now = new Date();
+    const pt = getZoneParts(PT_ZONE, now);
+    const secOfDayNow = pt.h * 3600 + pt.mi * 60 + pt.s;
+    const today = computeShardForDay(Number(pt.d), SHARD_WD_ISO[pt.weekday]);
+
+    if (today.hasShardToday) {
+      for (let i = 0; i < 3; i++) {
+        const startSec = today.offsetSec + i * today.intervalSec;
+        const endSec = startSec + SHARD_DURATION_SEC;
+        if (secOfDayNow < endSec) {
+          return secOfDayNow >= startSec
+            ? { active: true, color: today.color, realmIdx: today.realmIdx, remainMs: (endSec - secOfDayNow) * 1000 }
+            : { active: false, color: today.color, realmIdx: today.realmIdx, remainMs: (startSec - secOfDayNow) * 1000 };
+        }
+      }
+    }
+    // 今日はもう終わった（or 今日は発生しない）→ 最大7日先まで探す
+    for (let dayAhead = 1; dayAhead <= 7; dayAhead++) {
+      const future = new Date(now.getTime() + dayAhead * 86400000);
+      const fpt = getZoneParts(PT_ZONE, future);
+      const info = computeShardForDay(Number(fpt.d), SHARD_WD_ISO[fpt.weekday]);
+      if (info.hasShardToday) {
+        const remainSec = dayAhead * 86400 - secOfDayNow + info.offsetSec;
+        return { active: false, color: info.color, realmIdx: info.realmIdx, remainMs: remainSec * 1000 };
+      }
+    }
+    return null;
+  }
+
+  function renderShardBadge() {
+    const status = findShardStatus();
+    const badgeEl = document.getElementById('shardBadge');
+    if (!status) { badgeEl.style.display = 'none'; return; }
+
+    const realmName = SHARD_REALM_JA[SHARD_REALMS[status.realmIdx]];
+    const colorName = status.color === 'red' ? '赤い破片' : '黒い破片';
+    const remain = fmtSkyRemain(status.remainMs);
+
+    document.getElementById('shardDot').className = `shard-dot ${status.color} ${status.active ? 'active' : ''}`;
+    document.getElementById('shardRealmText').textContent = realmName;
+    badgeEl.classList.toggle('upcoming', !status.active);
+    badgeEl.title = status.active
+      ? `${colorName}が来ています（${realmName}）／終了まで${remain}`
+      : `${colorName}が来ます（${realmName}）／開始まで${remain}`;
+  }
+  renderShardBadge();
+  setInterval(renderShardBadge, 30000);
 </script>
 </body>
 </html>
