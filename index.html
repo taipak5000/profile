@@ -490,12 +490,16 @@
   .sky-clock-sub { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; }
 
   .sky-reset-mini {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; color: var(--text-muted); margin-top: 6px;
-    font-variant-numeric: tabular-nums; cursor: help;
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 6px; cursor: help;
   }
-  .sky-reset-icon { font-size: 12px; }
-  .sky-reset-val { color: var(--text); font-weight: 700; }
+  .sky-reset-icon { font-size: 12px; flex-shrink: 0; }
+  .sky-reset-text { min-width: 0; }
+  .sky-reset-label-mini { font-size: 9.5px; color: var(--text-muted); line-height: 1.25; white-space: nowrap; }
+  .sky-reset-val {
+    font-size: 11px; color: var(--text); font-weight: 700; line-height: 1.25;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
   .sky-reset-val.soon { color: #FBBF24; }
 
   .sky-active-item {
@@ -573,14 +577,20 @@
         <div class="sky-panel sky-panel-left" id="skyPanelClock">
           <div class="sky-panel-label"><span class="sky-live-dot"></span>JST</div>
           <div class="sky-clock-time" id="skyJstClock">--:--:--</div>
-          <div class="sky-clock-sub" id="skyClockSub">Sky --:--</div>
+          <div class="sky-clock-sub" id="skyClockSub">ゲーム内時間 --:--</div>
           <div class="sky-reset-mini" id="skyDailyResetMini">
             <span class="sky-reset-icon">🌅</span>
-            <span class="sky-reset-val" id="skyDailyCountdown">--:--:--</span>
+            <div class="sky-reset-text">
+              <div class="sky-reset-label-mini">デイリー残り</div>
+              <div class="sky-reset-val" id="skyDailyCountdown">--:--:--</div>
+            </div>
           </div>
           <div class="sky-reset-mini" id="skyEdenResetMini">
             <span class="sky-reset-icon">🌋</span>
-            <span class="sky-reset-val" id="skyEdenCountdown">--</span>
+            <div class="sky-reset-text">
+              <div class="sky-reset-label-mini">原罪リセットまで</div>
+              <div class="sky-reset-val" id="skyEdenCountdown">--</div>
+            </div>
           </div>
         </div>
 
@@ -938,7 +948,7 @@
     const jst = getZoneParts('Asia/Tokyo');
 
     document.getElementById('skyJstClock').textContent = `${pad2(jst.h)}:${pad2(jst.mi)}:${pad2(jst.s)}`;
-    document.getElementById('skyClockSub').textContent = `Sky ${pad2(pt.h)}:${pad2(pt.mi)}`;
+    document.getElementById('skyClockSub').textContent = `ゲーム内時間 ${pad2(pt.h)}:${pad2(pt.mi)}`;
 
     // デイリーリセット: 毎日 Sky時間0:00（＝PT 0:00）
     const secOfDay = pt.h * 3600 + pt.mi * 60 + pt.s;
