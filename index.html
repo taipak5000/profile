@@ -1158,7 +1158,9 @@
     if (days >= 1) return `あと${days}日`;
     const h = Math.floor(ms / 3600000);
     if (h >= 1) return `あと${h}時間`;
-    return `あと${Math.max(1, Math.floor(ms / 60000))}分`;
+    const mi = Math.floor(ms / 60000);
+    if (mi >= 1) return `あと${mi}分`;
+    return `あと${Math.max(0, Math.floor(ms / 1000))}秒`;
   }
   function escapeSkyHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1270,7 +1272,7 @@
       });
   }
   renderSkyActive();
-  setInterval(renderSkyActive, 60000);
+  setInterval(renderSkyActive, 1000);
 
   /* ================================================================
      🔺 闇の破片（シャード）の有無・色・場所
