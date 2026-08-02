@@ -443,6 +443,21 @@
     color: var(--sky-bright);
   }
 
+  /* ---------- References（参考文献の折りたたみ） ---------- */
+  .ref-content { white-space: normal; }
+  .ref-group { margin: 0 0 12px; }
+  .ref-group:last-child { margin-bottom: 0; }
+  .ref-group-label {
+    font-size: 12px; font-weight: 700; color: var(--sky-bright);
+    margin: 0 0 6px;
+  }
+  .ref-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .ref-item { font-size: 12.5px; line-height: 1.6; }
+  .ref-item a { color: var(--sky-bright); text-decoration: underline; text-underline-offset: 2px; word-break: break-all; }
+  .ref-item a:hover { color: var(--sky); }
+  .ref-item .ref-note { display: block; color: var(--text-muted); font-size: 12px; }
+  .ref-empty { font-size: 12.5px; color: var(--text-muted); }
+
   /* ---------- Sky Status（アバター下のコンパクトパネル。PC/モバイル共通） ---------- */
   .avatar-row {
     display: grid;
@@ -666,6 +681,14 @@
     <section>
       <h2 class="section-label">Links</h2>
       <div class="links" id="links-container"></div>
+    </section>
+
+    <section>
+      <h2 class="section-label">References</h2>
+      <details class="more-info ref-details">
+        <summary class="more-info-summary">参考にした文献・引用元</summary>
+        <div class="more-info-content ref-content" id="ref-content"><!-- JS --></div>
+      </details>
     </section>
   </main>
 
@@ -907,6 +930,108 @@
   }
 
   /* ================================================================
+     ▼▼▼ References：このサイト群を作る際に参考にした文献・引用元 ▼▼▼
+     グループ（サイト名）ごとに [タイトル, URL, 用途メモ] を並べています。
+     ================================================================ */
+  const referenceSources = [
+    {
+      group: 'このプロフィールページ（Sky Status / 闇の破片）',
+      items: [
+        { title: 'Days of Sunlight | Sky: Children of the Light Wiki (Fandom)', url: 'https://sky-children-of-the-light.fandom.com/wiki/Days_of_Sunlight', note: '「陽光の日々」イベントの開催期間の確認' },
+        { title: 'Shard Eruptions | Sky: Children of the Light Wiki (Fandom)', url: 'https://sky-children-of-the-light.fandom.com/wiki/Shard_Eruptions', note: '闇の破片（シャード）の仕組みの確認' },
+        { title: 'PlutoyDev/sky-shards (GitHub)', url: 'https://github.com/PlutoyDev/sky-shards', note: '闇の破片の色・時刻・場所を予測するコミュニティ検証済みロジック（Shard Prediction Rule）の実装元' },
+        { title: '【Sky】闇の破片まとめ｜今日落ちる場所と時間 | 9bit', url: 'https://9-bit.jp/skygold/23767/', note: '闇の破片の全体像・王国名の日本語表記の確認' },
+        { title: '草原の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/24486/', note: '草原エリアの落下場所名（日本語）の確認' },
+        { title: '雨林の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23881/', note: '雨林エリアの落下場所名（日本語）の確認' },
+        { title: '峡谷の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23856/', note: '峡谷エリアの落下場所名（日本語）の確認' },
+        { title: '捨て地の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23740/', note: '捨てられた地エリアの落下場所名（日本語）の確認' },
+        { title: '書庫の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23794/', note: '書庫エリアの落下場所名（日本語）の確認' },
+        { title: '捨てられた地の闇の破片の場所一覧 | ゲームエイト', url: 'https://game8.jp/sky/541524', note: '捨てられた地エリアの落下場所名の補足確認' },
+        { title: 'エリアマップ | Sky 星を紡ぐ子どもたち Wiki*', url: 'https://wikiwiki.jp/sky-jp/%E3%82%A8%E3%83%AA%E3%82%A2%E3%83%9E%E3%83%83%E3%83%97', note: '各王国のエリア名（日本語表記）の確認' },
+      ]
+    },
+    {
+      group: '🗂️ アイテム所持管理（item）',
+      items: [
+        { title: 'Outfits | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Outfits', note: 'アウトフィット一覧・入手元データ' },
+        { title: 'Shoes | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Shoes', note: 'シューズ一覧・入手元データ、コスト表' },
+        { title: 'Masks | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Masks', note: 'マスク一覧・入手元データ' },
+        { title: 'Face Accessories | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Face_Accessories', note: 'フェイスアクセサリー一覧・入手元データ' },
+        { title: 'Necklaces | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Necklaces', note: 'ネックレス一覧・入手元データ' },
+        { title: 'Hair | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Hair', note: 'ヘアスタイル一覧・入手元データ' },
+        { title: 'Hair Accessories | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Hair_Accessories', note: 'ヘアアクセサリー一覧・入手元データ' },
+        { title: 'Head Accessories | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Head_Accessories', note: 'ヘッドアクセサリー一覧・入手元データ' },
+        { title: 'Capes | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Capes', note: 'ケープ一覧・入手元データ' },
+        { title: 'Held Props | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Held_Props', note: '持ち運べるアイテム一覧・入手元データ' },
+        { title: 'Large Props | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Large_Props', note: '大きな設置可能アイテム一覧・入手元データ' },
+        { title: 'Small Props | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Small_Props', note: '小さな設置可能アイテム一覧・入手元データ' },
+        { title: 'Cosmetics | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Cosmetics', note: 'ドレスアップアイテム一覧・入手元データ' },
+      ]
+    },
+    {
+      group: '🪽 羽トラッカー（wings）',
+      items: [
+        { title: 'Traveling Spirit | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Traveling_Spirit', note: '放浪精霊の初期羽枚数などのデータ' },
+        { title: 'Regular Spirit | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Regular_Spirit', note: '通常精霊のデータ' },
+        { title: 'Children of Light | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Children_of_Light', note: '光の子供たちの再訪データ、および掲載画像（Fandom画像CDNから直接参照）' },
+      ]
+    },
+    {
+      group: '✨ 精霊同行ツール（companion）',
+      items: [
+        { title: 'Dear Van Gogh | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Dear_Van_Gogh', note: '現行シーズンのツリー・コストデータ' },
+        { title: '季節精霊（精霊友情システム） | Sky Wiki 日本語版', url: 'https://sky-children-of-the-light.fandom.com/ja/wiki/%E5%AD%A3%E7%AF%80%E7%B2%BE%E9%9C%8A#%E7%B2%BE%E9%9C%8A%E5%8F%8B%E6%83%85%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0', note: '精霊友情システムの仕様確認' },
+      ]
+    },
+    {
+      group: '🕯️ 星のキャンドル計算機（star-candle）',
+      items: [
+        { title: '破片の噴出 | Sky Wiki 日本語版', url: 'https://sky-children-of-the-light.fandom.com/ja/wiki/%E7%A0%B4%E7%89%87%E3%81%AE%E5%99%B4%E5%87%BA', note: '赤闇（星のキャンドル）出現予測のデータ' },
+      ]
+    },
+    {
+      group: '🎭 エモート所持率管理（emote）',
+      items: [
+        { title: 'Expressions | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Expressions', note: 'エモート一覧・入手元データ' },
+      ]
+    },
+    {
+      group: 'Sky キャンドル計算機 (Web版)（skyzztai.management.tool）',
+      items: [
+        { title: 'Pieces of Light | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Pieces_of_Light', note: '光の欠片データ' },
+        { title: 'Additional Light Sources | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Additional_Light_Sources', note: '追加の光源データ' },
+        { title: 'Special:AllMaps | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Special:AllMaps', note: '光源マーカーの座標データ算出に利用（マップ画像自体は使用せず、座標データのみ参照）' },
+        { title: 'ソルとシュガ様の地図（制作者クレジット）', url: '', note: 'エリアマップ上の光源位置を描く際に参考にしたファンメイドの地図。作者様の掲載URLがコード内に見つからなかったため、お名前のみの記載です' },
+      ]
+    },
+  ];
+
+  function renderReferences() {
+    const el = document.getElementById('ref-content');
+    if (!el) return;
+    if (referenceSources.length === 0) {
+      el.innerHTML = '<div class="ref-empty">現在、参考文献の登録はありません</div>';
+      return;
+    }
+    el.innerHTML = referenceSources.map(g => `
+      <div class="ref-group">
+        <div class="ref-group-label">${escapeSkyHtmlSafe(g.group)}</div>
+        <ul class="ref-list">
+          ${g.items.map(it => `
+            <li class="ref-item">
+              ${it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer">${escapeSkyHtmlSafe(it.title)}</a>` : `<span>${escapeSkyHtmlSafe(it.title)}</span>`}
+              ${it.note ? `<span class="ref-note">${escapeSkyHtmlSafe(it.note)}</span>` : ''}
+            </li>`).join('')}
+        </ul>
+      </div>`).join('');
+  }
+  // このファイル内で定義済みの escapeSkyHtml と同等の簡易エスケープ（定義順に依存しないよう独立させています）
+  function escapeSkyHtmlSafe(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  renderReferences();
+
+  /* ================================================================
      ▼▼▼ ここから：アニメーション・楽しい仕組み ▼▼▼
      ================================================================ */
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1141,8 +1266,8 @@
       skyCategoryRowHtml('🍁', '季節', seasonInfo) +
       skyCategoryRowHtml('🎪', '日々', eventInfo) +
       skyCategoryRowHtml('🔁', '再訪', visitInfo, {
-        now:  remain => `再訪が帰るまで${remain}`,
-        next: remain => `再訪が来るまで${remain}`
+        now:  remain => `帰るまで${remain}`,
+        next: remain => `訪れるまで${remain}`
       });
   }
   renderSkyActive();
@@ -1151,21 +1276,31 @@
   /* ================================================================
      🔺 闇の破片（シャード）の有無・色・場所
      コミュニティで検証された予測ルール（Sky Shards: PlutoyDev/sky-shards の
-     Shard Prediction Rule）を元に計算しています。日付はPT（アメリカ太平洋時間）基準、
-     場所は「毎月1日から 草原→雨林→峡谷→捨てられた地→書庫 の順で1日ずつ切り替わる」
-     というルールに基づく王国（大まかな場所）です。非公式の予測のため、
+     Shard Prediction Rule）を元に、いつ・何色の破片がどの王国に来るかを計算しています。
+     日付・時刻の判定自体はPT（アメリカ太平洋時間）基準（ゲームの仕様どおり）ですが、
+     「今日はもう来ない」の判定は日本時間の日付を基準にしています
+     （日本時間の今日中に開始しないものは「なし」と表示）。
+     場所名は9bit（https://9-bit.jp/skygold/）の各王国別ページの表記を参考にしていますが、
+     一部（プレーリーの村落の島々／雨林のBoneyard・Forest Garden相当）は資料が
+     はっきりしなかったため直訳での代用です。あくまで非公式の予測のため、
      実際とズレる場合があります。
      ================================================================ */
   const SHARD_REALMS = ['prairie', 'forest', 'valley', 'wasteland', 'vault'];
   const SHARD_REALM_JA = { prairie: '草原', forest: '雨林', valley: '峡谷', wasteland: '捨てられた地', vault: '書庫' };
   const SHARD_WD_ISO = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
   // 黒い破片2種・赤い破片3種、それぞれの初回開始時刻（PT）・間隔・発生しない曜日（ISO: 月=1〜日=7）
+  // maps は [草原, 雨林, 峡谷, 捨てられた地, 書庫] の順の場所名（9bit準拠、一部は直訳フォールバック）
   const SHARD_CONFIGS = [
-    { color: 'black', offsetSec: (1 * 3600 + 50 * 60), intervalSec: 8 * 3600, noShardWkDay: [6, 7] }, // 土・日は無し
-    { color: 'black', offsetSec: (2 * 3600 + 10 * 60), intervalSec: 8 * 3600, noShardWkDay: [7, 1] }, // 日・月は無し
-    { color: 'red',   offsetSec: (7 * 3600 + 40 * 60), intervalSec: 6 * 3600, noShardWkDay: [1, 2] }, // 月・火は無し
-    { color: 'red',   offsetSec: (2 * 3600 + 20 * 60), intervalSec: 6 * 3600, noShardWkDay: [2, 3] }, // 火・水は無し
-    { color: 'red',   offsetSec: (3 * 3600 + 30 * 60), intervalSec: 6 * 3600, noShardWkDay: [3, 4] }, // 水・木は無し
+    { color: 'black', offsetSec: (1 * 3600 + 50 * 60), intervalSec: 8 * 3600, noShardWkDay: [6, 7],
+      maps: ['蝶々の住処', '小川', 'スケートリンク', '最初のエリア', '星月夜の砂漠（バラ付近）'] }, // 土・日は無し
+    { color: 'black', offsetSec: (2 * 3600 + 10 * 60), intervalSec: 8 * 3600, noShardWkDay: [7, 1],
+      maps: ['村落の島々', '墓地の丘', 'スケートリンク', '戦場', '星月夜の砂漠（バラ付近）'] }, // 日・月は無し
+    { color: 'red',   offsetSec: (7 * 3600 + 40 * 60), intervalSec: 6 * 3600, noShardWkDay: [1, 2],
+      maps: ['洞窟', '森の庭', '夢見の町', '墓所', '星月夜の砂漠（舟のエリア）'] }, // 月・火は無し
+    { color: 'red',   offsetSec: (2 * 3600 + 20 * 60), intervalSec: 6 * 3600, noShardWkDay: [2, 3],
+      maps: ['鳥の巣', 'ツリーハウス', '夢見の町', '座礁船', '星月夜の砂漠（舟のエリア）'] }, // 火・水は無し
+    { color: 'red',   offsetSec: (3 * 3600 + 30 * 60), intervalSec: 6 * 3600, noShardWkDay: [3, 4],
+      maps: ['楽園の島々', '晴れ間', '隠者の峠', '忘れられた方舟', '星月夜の砂漠（舟のエリア）'] }, // 水・木は無し
   ];
   const SHARD_DURATION_SEC = 4 * 3600; // 破片は出現から4時間で消える
 
@@ -1178,13 +1313,14 @@
     return {
       color: cfg.color,
       realmIdx,
+      place: cfg.maps[realmIdx],
       offsetSec: cfg.offsetSec,
       intervalSec: cfg.intervalSec,
       hasShardToday: !cfg.noShardWkDay.includes(weekdayIso)
     };
   }
 
-  // 現在の状況（今まさに出現中 or 次はいつ・何色・どこか）を求める
+  // 現在の状況（今まさに出現中 or 次はいつ・何色・どこか）を、開始・終了の絶対時刻つきで求める
   function findShardStatus() {
     const now = new Date();
     const pt = getZoneParts(PT_ZONE, now);
@@ -1196,9 +1332,9 @@
         const startSec = today.offsetSec + i * today.intervalSec;
         const endSec = startSec + SHARD_DURATION_SEC;
         if (secOfDayNow < endSec) {
-          return secOfDayNow >= startSec
-            ? { active: true, color: today.color, realmIdx: today.realmIdx, remainMs: (endSec - secOfDayNow) * 1000 }
-            : { active: false, color: today.color, realmIdx: today.realmIdx, remainMs: (startSec - secOfDayNow) * 1000 };
+          const start = new Date(now.getTime() + (startSec - secOfDayNow) * 1000);
+          const end = new Date(now.getTime() + (endSec - secOfDayNow) * 1000);
+          return { active: secOfDayNow >= startSec, color: today.color, place: today.place, realmIdx: today.realmIdx, start, end };
         }
       }
     }
@@ -1208,8 +1344,11 @@
       const fpt = getZoneParts(PT_ZONE, future);
       const info = computeShardForDay(Number(fpt.d), SHARD_WD_ISO[fpt.weekday]);
       if (info.hasShardToday) {
-        const remainSec = dayAhead * 86400 - secOfDayNow + info.offsetSec;
-        return { active: false, color: info.color, realmIdx: info.realmIdx, remainMs: remainSec * 1000 };
+        const startSec = dayAhead * 86400 + info.offsetSec;
+        const endSec = startSec + SHARD_DURATION_SEC;
+        const start = new Date(now.getTime() + (startSec - secOfDayNow) * 1000);
+        const end = new Date(now.getTime() + (endSec - secOfDayNow) * 1000);
+        return { active: false, color: info.color, place: info.place, realmIdx: info.realmIdx, start, end };
       }
     }
     return null;
@@ -1218,18 +1357,35 @@
   function renderShardBadge() {
     const status = findShardStatus();
     const badgeEl = document.getElementById('shardBadge');
+    const dotEl = document.getElementById('shardDot');
+    const textEl = document.getElementById('shardRealmText');
     if (!status) { badgeEl.style.display = 'none'; return; }
 
-    const realmName = SHARD_REALM_JA[SHARD_REALMS[status.realmIdx]];
-    const colorName = status.color === 'red' ? '赤い破片' : '黒い破片';
-    const remain = fmtSkyRemain(status.remainMs);
+    const now = new Date();
 
-    document.getElementById('shardDot').className = `shard-dot ${status.color} ${status.active ? 'active' : ''}`;
-    document.getElementById('shardRealmText').textContent = realmName;
+    // 開催中でなければ、日本時間の「今日」の範囲内に開始するものだけを対象にする
+    if (!status.active) {
+      const todayJst = getZoneParts('Asia/Tokyo', now);
+      const startJst = getZoneParts('Asia/Tokyo', status.start);
+      const isStartToday = todayJst.y === startJst.y && todayJst.mo === startJst.mo && todayJst.d === startJst.d;
+      if (!isStartToday) {
+        dotEl.className = 'shard-dot';
+        textEl.textContent = 'なし';
+        badgeEl.classList.add('upcoming');
+        badgeEl.title = '本日（日本時間）はこの後、闇の破片の出現予定はありません';
+        return;
+      }
+    }
+
+    const colorName = status.color === 'red' ? '赤い破片' : '黒い破片';
+    const remain = fmtSkyRemain(status.active ? (status.end - now) : (status.start - now));
+
+    dotEl.className = `shard-dot ${status.color} ${status.active ? 'active' : ''}`;
+    textEl.textContent = status.place;
     badgeEl.classList.toggle('upcoming', !status.active);
     badgeEl.title = status.active
-      ? `${colorName}が来ています（${realmName}）／終了まで${remain}`
-      : `${colorName}が来ます（${realmName}）／開始まで${remain}`;
+      ? `${colorName}が来ています（${SHARD_REALM_JA[SHARD_REALMS[status.realmIdx]] || ''}・${status.place}）／終了まで${remain}`
+      : `${colorName}が来ます（${status.place}）／開始まで${remain}`;
   }
   renderShardBadge();
   setInterval(renderShardBadge, 30000);
