@@ -748,17 +748,27 @@
       }
     ],
     events: [
-      // 例:
-      // { name: '陽光の日々', start: '2026-08-10T16:00', end: '2026-08-24T15:59', note: '' },
+      { name: '陽光の日々', start: '2026-07-31T16:00', end: '2026-08-21T15:59', note: '' },
     ],
     travelingSpirits: [
       // 例:
       // { name: '〇〇の精霊', start: '2026-08-06T17:00', end: '2026-08-10T16:59', note: '' },
     ],
+    // 通常の再訪（recurringVisitの周期に当てはまらない単発の復刻）はここに追加してください
     specialVisits: [
       // 例:
       // { name: '復刻: 〇〇の季節の精霊たち', start: '2026-08-17T16:00', end: '2026-08-31T15:59', note: '' },
     ]
+  };
+
+  // 「再訪する精霊たち」は2週間おきに4日間（木16:00〜月15:59）来る周期イベントなので、
+  // 直近1回分の開始・終了日時を基準にすれば、以降は自動で計算されます。
+  // 周期がずれてきたら anchorStart / anchorEnd を最新の回に合わせて更新してください。
+  const recurringVisit = {
+    name: '再訪する精霊たち',
+    anchorStart: '2026-07-30T16:00',
+    anchorEnd: '2026-08-03T15:59',
+    intervalDays: 14
   };
   /* ================================================================
      ▲▲▲ 編集はここまでです。この下は表示用のコードなので
@@ -1048,10 +1058,47 @@
       </div>`;
   }
 
+  // recurringVisit（〇日おきに△日間、というパターンの再訪）から
+  // 「現在開催中」または「一番近い今後の回」を計算する
+  function findRecurringOccurrence(rule) {
+    if (!rule || !rule.anchorStart || !rule.anchorEnd || !rule.intervalDays) return { active: null, next: null };
+    const anchorStart = parseSkyJst(rule.anchorStart);
+    const anchorEnd = parseSkyJst(rule.anchorEnd);
+    const durationMs = anchorEnd - anchorStart;
+    const intervalMs = rule.intervalDays * 86400000;
+    const now = new Date();
+    const k = Math.floor((now - anchorStart) / intervalMs);
+    let active = null, next = null;
+    for (let i = k - 1; i <= k + 1; i++) {
+      const start = new Date(anchorStart.getTime() + i * intervalMs);
+      const end = new Date(start.getTime() + durationMs);
+      const ev = { name: rule.name, note: rule.note || '' };
+      if (start <= now && now < end) {
+        active = { ev, start, end };
+      } else if (start > now && (!next || start < next.start)) {
+        next = { ev, start, end };
+      }
+    }
+    return { active, next };
+  }
+
+  // 単発の specialVisits（手動登録分）と recurringVisit（周期分）をあわせて、
+  // 「現在開催中」「一番近い今後の回」を1つに絞り込む
+  function findVisitInfo() {
+    const manual = findActiveOrNext(skySchedule.specialVisits);
+    const recurring = findRecurringOccurrence(recurringVisit);
+    const active = manual.active || recurring.active;
+    let next = null;
+    [manual.next, recurring.next].forEach(n => {
+      if (n && (!next || n.start < next.start)) next = n;
+    });
+    return { active, next };
+  }
+
   function renderSkyActive() {
     const seasonInfo = findActiveOrNext(skySchedule.seasons);
     const eventInfo = findActiveOrNext(skySchedule.events);
-    const visitInfo = findActiveOrNext(skySchedule.specialVisits);
+    const visitInfo = findVisitInfo();
 
     const dotEl = document.getElementById('skyNowDot');
     if (dotEl) dotEl.style.visibility = (seasonInfo.active || eventInfo.active || visitInfo.active) ? 'visible' : 'hidden';
