@@ -556,19 +556,29 @@
   .sky-active-item {
     display: flex; align-items: flex-start; gap: 6px;
     padding: 5px 0; border-top: 1px dashed var(--border);
-    cursor: help;
   }
   .sky-active-item:first-child { border-top: none; padding-top: 0; }
+  .sky-active-item.sky-active-toggle { cursor: pointer; }
   .sky-active-icon { font-size: 13px; flex-shrink: 0; line-height: 1.3; }
-  .sky-active-text { min-width: 0; }
+  .sky-active-text { min-width: 0; flex: 1; }
   .sky-active-name {
     font-size: 11px; font-weight: 700; color: var(--text); line-height: 1.3;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
+  .sky-active-expand-hint {
+    display: inline-block; margin-left: 4px; font-size: 9px; color: var(--sky);
+    transition: transform 0.2s ease;
+  }
+  .sky-active-item.is-expanded .sky-active-expand-hint { transform: rotate(90deg); }
   .sky-active-remain { font-size: 9.5px; font-weight: 700; margin-top: 1px; }
   .sky-active-remain.is-now { color: var(--teal); }
   .sky-active-remain.is-future { color: var(--sky-bright); }
   .sky-active-remain.sky-active-none { color: var(--text-muted); font-weight: 500; }
+  .sky-active-detail {
+    display: none; margin-top: 5px; font-size: 10.5px; line-height: 1.6; color: var(--text-muted);
+    padding: 6px 9px; background: var(--panel-alt); border-radius: 6px; border-left: 2px solid var(--border-strong);
+  }
+  .sky-active-item.is-expanded .sky-active-detail { display: block; }
 
   /* ---------- フッター ---------- */
   .footnote {
@@ -1213,13 +1223,20 @@
       </div>`;
     }
     const range = `${fmtSkyDate(entry.start)}〜${fmtSkyDate(entry.end)}`;
-    const titleText = `${escapeSkyHtml(entry.ev.name)}（${range}）${entry.ev.note ? ' ／ ' + escapeSkyHtml(entry.ev.note) : ''}`;
+    const fullName = escapeSkyHtml(entry.ev.name);
+    const noteHtml = entry.ev.note ? `<br>${escapeSkyHtml(entry.ev.note)}` : '';
+    const titleText = `${fullName}（${range}）${entry.ev.note ? ' ／ ' + escapeSkyHtml(entry.ev.note) : ''}`;
+    // PCではtitle属性のホバーで、スマホ等タップ操作の環境ではこの要素自体をタップして
+    // .sky-active-detail を開閉することで、どちらでも正式名称・期間を確認できるようにする。
     return `
-      <div class="sky-active-item" title="${titleText}">
+      <div class="sky-active-item sky-active-toggle" title="${titleText}" role="button" tabindex="0"
+        onclick="this.classList.toggle('is-expanded')"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('is-expanded');}">
         <span class="sky-active-icon">${icon}</span>
         <div class="sky-active-text">
-          <div class="sky-active-name">${label}</div>
+          <div class="sky-active-name">${label}<span class="sky-active-expand-hint">▸</span></div>
           <div class="sky-active-remain ${stateClass}">${text}</div>
+          <div class="sky-active-detail">${fullName}（${range}）${noteHtml}</div>
         </div>
       </div>`;
   }
