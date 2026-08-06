@@ -449,21 +449,6 @@
     color: var(--sky-bright);
   }
 
-  /* ---------- References（参考文献の折りたたみ） ---------- */
-  .ref-content { white-space: normal; }
-  .ref-group { margin: 0 0 12px; }
-  .ref-group:last-child { margin-bottom: 0; }
-  .ref-group-label {
-    font-size: 12px; font-weight: 700; color: var(--sky-bright);
-    margin: 0 0 6px;
-  }
-  .ref-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-  .ref-item { font-size: 12.5px; line-height: 1.6; }
-  .ref-item a { color: var(--sky-bright); text-decoration: underline; text-underline-offset: 2px; word-break: break-all; }
-  .ref-item a:hover { color: var(--sky); }
-  .ref-item .ref-note { display: block; color: var(--text-muted); font-size: 12px; }
-  .ref-empty { font-size: 12.5px; color: var(--text-muted); }
-
   /* ---------- Sky Status（アバター下のコンパクトパネル。PC/モバイル共通） ---------- */
   .avatar-row {
     display: grid;
@@ -698,17 +683,10 @@
       <h2 class="section-label">Links</h2>
       <div class="links" id="links-container"></div>
     </section>
-
-    <section>
-      <h2 class="section-label">References</h2>
-      <details class="more-info ref-details">
-        <summary class="more-info-summary">参考にした文献・引用元</summary>
-        <div class="more-info-content ref-content" id="ref-content"><!-- JS --></div>
-      </details>
-    </section>
   </main>
 
   <p class="footnote" id="footnote"></p>
+  <p class="footnote" style="margin-top:6px;"><a href="https://taipak5000.github.io/tai-info/" style="color:inherit; text-decoration:underline; text-underline-offset:2px;">⚙️ 設定・更新情報・クレジット・プライバシーポリシー</a></p>
 </div>
 
 <script>
@@ -944,107 +922,6 @@
       container.appendChild(a);
     });
   }
-
-  /* ================================================================
-     ▼▼▼ References：このサイト群を作る際に参考にした文献・引用元 ▼▼▼
-     グループ（サイト名）ごとに [タイトル, URL, 用途メモ] を並べています。
-     ================================================================ */
-  const referenceSources = [
-    {
-      group: 'このプロフィールページ（Sky Status / 闇の破片）',
-      items: [
-        { title: 'Days of Sunlight | Sky: Children of the Light Wiki (Fandom)', url: 'https://sky-children-of-the-light.fandom.com/wiki/Days_of_Sunlight', note: '「陽光の日々」イベントの開催期間の確認' },
-        { title: 'Shard Eruptions | Sky: Children of the Light Wiki (Fandom)', url: 'https://sky-children-of-the-light.fandom.com/wiki/Shard_Eruptions', note: '闇の破片（シャード）の仕組みの確認' },
-        { title: 'PlutoyDev/sky-shards (GitHub)', url: 'https://github.com/PlutoyDev/sky-shards', note: '闇の破片の色・時刻・場所を予測するコミュニティ検証済みロジック（Shard Prediction Rule）の実装元' },
-        { title: '【Sky】闇の破片まとめ｜今日落ちる場所と時間 | 9bit', url: 'https://9-bit.jp/skygold/23767/', note: '闇の破片の全体像・王国名の日本語表記の確認' },
-        { title: '草原の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/24486/', note: '草原エリアの落下場所名（日本語）の確認' },
-        { title: '雨林の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23881/', note: '雨林エリアの落下場所名（日本語）の確認' },
-        { title: '峡谷の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23856/', note: '峡谷エリアの落下場所名（日本語）の確認' },
-        { title: '捨て地の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23740/', note: '捨てられた地エリアの落下場所名（日本語）の確認' },
-        { title: '書庫の闇の破片 | 9bit', url: 'https://9-bit.jp/skygold/23794/', note: '書庫エリアの落下場所名（日本語）の確認' },
-        { title: '捨てられた地の闇の破片の場所一覧 | ゲームエイト', url: 'https://game8.jp/sky/541524', note: '捨てられた地エリアの落下場所名の補足確認' },
-        { title: 'エリアマップ | Sky 星を紡ぐ子どもたち Wiki*', url: 'https://wikiwiki.jp/sky-jp/%E3%82%A8%E3%83%AA%E3%82%A2%E3%83%9E%E3%83%83%E3%83%97', note: '各王国のエリア名（日本語表記）の確認' },
-      ]
-    },
-    {
-      group: '🗂️ アイテム所持管理（item）',
-      items: [
-        { title: 'Outfits | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Outfits', note: 'アウトフィット一覧・入手元データ' },
-        { title: 'Shoes | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Shoes', note: 'シューズ一覧・入手元データ、コスト表' },
-        { title: 'Masks | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Masks', note: 'マスク一覧・入手元データ' },
-        { title: 'Face Accessories | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Face_Accessories', note: 'フェイスアクセサリー一覧・入手元データ' },
-        { title: 'Necklaces | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Necklaces', note: 'ネックレス一覧・入手元データ' },
-        { title: 'Hair | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Hair', note: 'ヘアスタイル一覧・入手元データ' },
-        { title: 'Hair Accessories | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Hair_Accessories', note: 'ヘアアクセサリー一覧・入手元データ' },
-        { title: 'Head Accessories | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Head_Accessories', note: 'ヘッドアクセサリー一覧・入手元データ' },
-        { title: 'Capes | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Capes', note: 'ケープ一覧・入手元データ' },
-        { title: 'Held Props | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Held_Props', note: '持ち運べるアイテム一覧・入手元データ' },
-        { title: 'Large Props | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Large_Props', note: '大きな設置可能アイテム一覧・入手元データ' },
-        { title: 'Small Props | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Small_Props', note: '小さな設置可能アイテム一覧・入手元データ' },
-        { title: 'Cosmetics | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Cosmetics', note: 'ドレスアップアイテム一覧・入手元データ' },
-      ]
-    },
-    {
-      group: '🪽 羽トラッカー（wings）',
-      items: [
-        { title: 'Traveling Spirit | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Traveling_Spirit', note: '放浪精霊の初期羽枚数などのデータ' },
-        { title: 'Regular Spirit | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Regular_Spirit', note: '通常精霊のデータ' },
-        { title: 'Children of Light | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Children_of_Light', note: '光の子供たちの再訪データ、および掲載画像（Fandom画像CDNから直接参照）' },
-      ]
-    },
-    {
-      group: '✨ 精霊同行ツール（companion）',
-      items: [
-        { title: 'Dear Van Gogh | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Dear_Van_Gogh', note: '現行シーズンのツリー・コストデータ' },
-        { title: '季節精霊（精霊友情システム） | Sky Wiki 日本語版', url: 'https://sky-children-of-the-light.fandom.com/ja/wiki/%E5%AD%A3%E7%AF%80%E7%B2%BE%E9%9C%8A#%E7%B2%BE%E9%9C%8A%E5%8F%8B%E6%83%85%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0', note: '精霊友情システムの仕様確認' },
-      ]
-    },
-    {
-      group: '🕯️ 星のキャンドル計算機（star-candle）',
-      items: [
-        { title: '破片の噴出 | Sky Wiki 日本語版', url: 'https://sky-children-of-the-light.fandom.com/ja/wiki/%E7%A0%B4%E7%89%87%E3%81%AE%E5%99%B4%E5%87%BA', note: '赤闇（星のキャンドル）出現予測のデータ' },
-      ]
-    },
-    {
-      group: '🎭 エモート所持率管理（emote）',
-      items: [
-        { title: 'Expressions | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Expressions', note: 'エモート一覧・入手元データ' },
-      ]
-    },
-    {
-      group: 'ノーマルキャンドル計算機',
-      items: [
-        { title: 'Pieces of Light | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Pieces_of_Light', note: '光の欠片データ' },
-        { title: 'Additional Light Sources | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Additional_Light_Sources', note: '追加の光源データ' },
-        { title: 'Special:AllMaps | Sky Wiki', url: 'https://sky-children-of-the-light.fandom.com/wiki/Special:AllMaps', note: '光源マーカーの座標データ算出に利用（マップ画像自体は使用せず、座標データのみ参照）' },
-      ]
-    },
-  ];
-
-  function renderReferences() {
-    const el = document.getElementById('ref-content');
-    if (!el) return;
-    if (referenceSources.length === 0) {
-      el.innerHTML = '<div class="ref-empty">現在、参考文献の登録はありません</div>';
-      return;
-    }
-    el.innerHTML = referenceSources.map(g => `
-      <div class="ref-group">
-        <div class="ref-group-label">${escapeSkyHtmlSafe(g.group)}</div>
-        <ul class="ref-list">
-          ${g.items.map(it => `
-            <li class="ref-item">
-              ${it.url ? `<a href="${it.url}" target="_blank" rel="noopener noreferrer">${escapeSkyHtmlSafe(it.title)}</a>` : `<span>${escapeSkyHtmlSafe(it.title)}</span>`}
-              ${it.note ? `<span class="ref-note">${escapeSkyHtmlSafe(it.note)}</span>` : ''}
-            </li>`).join('')}
-        </ul>
-      </div>`).join('');
-  }
-  // このファイル内で定義済みの escapeSkyHtml と同等の簡易エスケープ（定義順に依存しないよう独立させています）
-  function escapeSkyHtmlSafe(s) {
-    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  }
-  renderReferences();
 
   /* ================================================================
      ▼▼▼ ここから：アニメーション・楽しい仕組み ▼▼▼
