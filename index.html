@@ -1190,14 +1190,14 @@
   const SHARD_REALM_JA = { prairie: '草原', forest: '雨林', valley: '峡谷', wasteland: '捨てられた地', vault: '書庫' };
   const SHARD_WD_ISO = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
   // 黒い破片2種・赤い破片3種、それぞれの初回開始時刻（PT）・間隔・発生しない曜日（ISO: 月=1〜日=7）
-  // maps は [草原, 雨林, 峡谷, 捨てられた地, 書庫] の順の場所名（9bit準拠、一部は直訳フォールバック）
+  // maps は [草原, 雨林, 峡谷, 捨てられた地, 書庫] の順の場所名（9bit準拠）
   const SHARD_CONFIGS = [
     { color: 'black', offsetSec: (1 * 3600 + 50 * 60), intervalSec: 8 * 3600, noShardWkDay: [6, 7],
       maps: ['蝶々の住処', '小川', 'スケートリンク', '最初のエリア', '星月夜の砂漠（バラ付近）'] }, // 土・日は無し
     { color: 'black', offsetSec: (2 * 3600 + 10 * 60), intervalSec: 8 * 3600, noShardWkDay: [7, 1],
-      maps: ['村落の島々', '墓地の丘', 'スケートリンク', '戦場', '星月夜の砂漠（バラ付近）'] }, // 日・月は無し
+      maps: ['草原の村', '開拓地', 'スケートリンク', '戦場', '星月夜の砂漠（バラ付近）'] }, // 日・月は無し
     { color: 'red',   offsetSec: (7 * 3600 + 40 * 60), intervalSec: 6 * 3600, noShardWkDay: [1, 2],
-      maps: ['洞窟', '森の庭', '夢見の町', '墓所', '星月夜の砂漠（舟のエリア）'] }, // 月・火は無し
+      maps: ['洞窟', '神殿奥', '夢見の町', '墓所', '星月夜の砂漠（舟のエリア）'] }, // 月・火は無し
     { color: 'red',   offsetSec: (2 * 3600 + 20 * 60), intervalSec: 6 * 3600, noShardWkDay: [2, 3],
       maps: ['鳥の巣', 'ツリーハウス', '夢見の町', '座礁船', '星月夜の砂漠（舟のエリア）'] }, // 火・水は無し
     { color: 'red',   offsetSec: (3 * 3600 + 30 * 60), intervalSec: 6 * 3600, noShardWkDay: [3, 4],
