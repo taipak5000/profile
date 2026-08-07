@@ -746,6 +746,12 @@
       description: "感想やご意見はこちらへどうぞ。\nDMやリプで送りにくい内容も気軽にお送りください！"
     },
     {
+      icon: "🗂️",
+      title: "アイテム所持管理",
+      url: "https://taipak5000.github.io/tai-item/",
+      description: "所持しているアイテムの管理や、\n未所持アイテムの入手コストを確認できます。\nウィッシュリストも作れるので、集めたい方におすすめ！"
+    },
+    {
       icon: "📌",
       title: "創作物管理ツール",
       url: "https://taipak5000.github.io/share/",
@@ -1076,6 +1082,16 @@
     return { active, next };
   }
 
+  // renderSkyActive は1秒おきに再描画されるため、タップで開いた詳細（is-expanded）が
+  // 次の描画で即座に消えてしまう。カテゴリごとの開閉状態をここに保持し、再描画時にも
+  // 復元することで、タップした詳細がすぐ閉じてしまう問題を防ぐ。
+  const skyExpandedCategories = new Set();
+  function skyToggleActiveDetail(label, el) {
+    if (skyExpandedCategories.has(label)) skyExpandedCategories.delete(label);
+    else skyExpandedCategories.add(label);
+    el.classList.toggle('is-expanded');
+  }
+
   function skyCategoryRowHtml(icon, label, info, phrasing) {
     const now = new Date();
     let text, stateClass, entry;
@@ -1105,10 +1121,11 @@
     const titleText = `${fullName}（${range}）${entry.ev.note ? ' ／ ' + escapeSkyHtml(entry.ev.note) : ''}`;
     // PCではtitle属性のホバーで、スマホ等タップ操作の環境ではこの要素自体をタップして
     // .sky-active-detail を開閉することで、どちらでも正式名称・期間を確認できるようにする。
+    const isExpanded = skyExpandedCategories.has(label);
     return `
-      <div class="sky-active-item sky-active-toggle" title="${titleText}" role="button" tabindex="0"
-        onclick="this.classList.toggle('is-expanded')"
-        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('is-expanded');}">
+      <div class="sky-active-item sky-active-toggle${isExpanded ? ' is-expanded' : ''}" title="${titleText}" role="button" tabindex="0"
+        onclick="skyToggleActiveDetail('${label}', this)"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();skyToggleActiveDetail('${label}', this);}">
         <span class="sky-active-icon">${icon}</span>
         <div class="sky-active-text">
           <div class="sky-active-name">${label}<span class="sky-active-expand-hint">▸</span></div>
