@@ -494,6 +494,34 @@
   .shard-dot.black.active { box-shadow: 0 0 6px 1px rgba(148,163,184,0.6), 0 0 0 2px var(--panel); }
   .shard-badge.upcoming { opacity: 0.6; }
 
+  /* ---------- タップで開く簡易ツールチップ（title属性の内容をそのまま表示） ---------- */
+  /* PCはtitle属性のホバーで、スマホ等タップ操作の環境はこのクラスをタップで
+     付け外しすることで、どちらでも同じ内容を確認できるようにする。 */
+  .shard-badge.tap-open::after,
+  .sky-reset-mini.tap-open::after {
+    content: attr(title);
+    position: absolute;
+    top: 100%;
+    margin-top: 6px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1.6;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    white-space: normal;
+    width: max-content;
+    max-width: 190px;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,0.6);
+    z-index: 50;
+    pointer-events: none;
+  }
+  .shard-badge.tap-open::after { right: 0; }
+  .sky-reset-mini { position: relative; }
+  .sky-reset-mini.tap-open::after { left: 0; }
+
   .sky-panel {
     width: 100%;
     box-sizing: border-box;
@@ -624,14 +652,18 @@
           <div class="sky-panel-label"><span class="sky-live-dot"></span>JST</div>
           <div class="sky-clock-time" id="skyJstClock">--:--:--</div>
           <div class="sky-clock-sub" id="skyClockSub">ゲーム内時間 --:--</div>
-          <div class="sky-reset-mini" id="skyDailyResetMini">
+          <div class="sky-reset-mini" id="skyDailyResetMini" role="button" tabindex="0"
+            onclick="this.classList.toggle('tap-open')"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('tap-open');}">
             <span class="sky-reset-icon">🌅</span>
             <div class="sky-reset-text">
               <div class="sky-reset-label-mini">デイリー残り</div>
               <div class="sky-reset-val" id="skyDailyCountdown">--:--:--</div>
             </div>
           </div>
-          <div class="sky-reset-mini" id="skyEdenResetMini">
+          <div class="sky-reset-mini" id="skyEdenResetMini" role="button" tabindex="0"
+            onclick="this.classList.toggle('tap-open')"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('tap-open');}">
             <span class="sky-reset-icon">🌋</span>
             <div class="sky-reset-text">
               <div class="sky-reset-label-mini">原罪リセットまで</div>
@@ -642,7 +674,9 @@
 
         <div class="avatar-wrap" id="avatar-wrap" title="タップしてみてね">
           <div class="avatar" id="avatar"></div>
-          <div class="shard-badge" id="shardBadge">
+          <div class="shard-badge" id="shardBadge" role="button" tabindex="0"
+            onclick="event.stopPropagation();this.classList.toggle('tap-open')"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();this.classList.toggle('tap-open');}">
             <span class="shard-dot" id="shardDot"></span>
             <span class="shard-realm" id="shardRealmText">--</span>
           </div>
